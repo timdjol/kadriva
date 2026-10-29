@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('Laravel Kit')
+            ->brandName('Cinema')
             ->colors([
                 'primary' => Color::Amber,
             ])

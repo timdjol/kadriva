@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Domain\Video;
+
+use App\Domain\Video\Concerns\ReadsVideoSources;
+use App\Models\Title;
+
+final class DatabaseVideoProvider implements VideoProviderInterface
+{
+    use ReadsVideoSources;
+
+    public function supports(Title $content, string $country): bool
+    {
+        return $this->getAvailability($content, $country) !== [];
+    }
+
+    public function getAvailability(Title $content, string $country, ?int $episodeId = null): array
+    {
+        return $this->sourcesFor($content, $country, $episodeId, [
+            VideoMode::Direct,
+            VideoMode::Embed,
+            VideoMode::External,
+            VideoMode::Trailer,
+        ])->map($this->optionFrom(...))->all();
+    }
+
+    public function getPlaybackOption(Title $content, string $country, ?int $episodeId = null): VideoOption
+    {
+        return $this->getAvailability($content, $country, $episodeId)[0] ?? new VideoOption(VideoMode::Unavailable);
+    }
+
+    public function select(Title $title, string $countryCode, ?int $episodeId = null): VideoOption
+    {
+        return $this->getPlaybackOption($title, $countryCode, $episodeId);
+    }
+}

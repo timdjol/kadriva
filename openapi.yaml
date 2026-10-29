@@ -1,0 +1,357 @@
+openapi: 3.1.0
+info:
+  title: Cinema API
+  version: 1.0.0
+  description: REST API гибридного онлайн-кинотеатра. OpenAPI является источником истины.
+servers:
+  - url: /api/v1
+tags:
+  - name: Catalog
+  - name: Auth
+  - name: Account
+paths:
+  /home:
+    get:
+      tags: [Catalog]
+      summary: Блоки главной страницы
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /titles:
+    get:
+      tags: [Catalog]
+      summary: Каталог
+      parameters:
+        - { $ref: "#/components/parameters/Page" }
+        - { name: type, in: query, schema: { type: string, enum: [movie, series] } }
+        - { name: genre, in: query, schema: { type: integer } }
+        - { name: year, in: query, schema: { type: integer } }
+        - { name: rating, in: query, schema: { type: number, minimum: 0, maximum: 10 } }
+        - { name: sort, in: query, schema: { type: string, enum: [popular, rating, release_date] } }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /titles/{id}:
+    get:
+      tags: [Catalog]
+      summary: Карточка фильма или сериала
+      parameters:
+        - $ref: "#/components/parameters/TitleId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /titles/{id}/seasons:
+    get:
+      tags: [Catalog]
+      summary: Сезоны и эпизоды
+      parameters:
+        - $ref: "#/components/parameters/TitleId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /titles/{id}/watch-options:
+    get:
+      tags: [Catalog]
+      summary: Варианты просмотра с честным статусом доступности
+      parameters:
+        - $ref: "#/components/parameters/TitleId"
+        - { name: country, in: query, schema: { type: string, pattern: "^[A-Z]{2}$", default: KG } }
+        - { name: episode_id, in: query, schema: { type: integer } }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /search:
+    get:
+      tags: [Catalog]
+      summary: Поиск каталога
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 2, maxLength: 100 } }
+        - { $ref: "#/components/parameters/Page" }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /countries:
+    get:
+      tags: [Catalog]
+      summary: Поддерживаемые страны
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /countries/detect:
+    get:
+      tags: [Catalog]
+      summary: Приблизительная страна по IP с подтверждением
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /genres:
+    get:
+      tags: [Catalog]
+      summary: Жанры каталога
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Регистрация
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Текущий пользователь
+      security: [{ sanctum: [] }]
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Вход
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Запрос ссылки сброса пароля
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Сброс пароля по токену
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, token, password, password_confirmation]
+              properties:
+                email: { type: string, format: email }
+                token: { type: string }
+                password: { type: string, format: password, minLength: 8 }
+                password_confirmation: { type: string, format: password }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Выход
+      security: [{ sanctum: [] }]
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /me/favorites:
+    get:
+      tags: [Account]
+      summary: Избранное
+      security: [{ sanctum: [] }]
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+    post:
+      tags: [Account]
+      summary: Добавить в избранное
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title_id]
+              properties:
+                title_id: { type: integer }
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+    delete:
+      tags: [Account]
+      summary: Удалить из избранного
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: title_id, in: query, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /me/history:
+    get:
+      tags: [Account]
+      summary: История просмотров
+      security: [{ sanctum: [] }]
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+  /me/progress/{titleId}:
+    get:
+      tags: [Account]
+      summary: Получить прогресс
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: titleId, in: path, required: true, schema: { type: integer } }
+        - { name: episode_id, in: query, schema: { type: integer } }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+    put:
+      tags: [Account]
+      summary: Сохранить прогресс
+      security: [{ sanctum: [] }]
+      parameters:
+        - { name: titleId, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProgressRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /me/settings:
+    put:
+      tags: [Account]
+      summary: Изменить страну пользователя
+      security: [{ sanctum: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [country_code]
+              properties:
+                country_code: { type: string, pattern: "^[A-Z]{2}$" }
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+components:
+  securitySchemes:
+    sanctum:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    TitleId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+  schemas:
+    Envelope:
+      type: object
+      required: [data, meta, errors]
+      properties:
+        data: {}
+        meta: { type: object }
+        errors:
+          type: array
+          items:
+            type: object
+            required: [code, message]
+            properties:
+              code: { type: string }
+              message: { type: string }
+              fields: { type: object }
+    RegisterRequest:
+      type: object
+      required: [name, email, password, password_confirmation]
+      properties:
+        name: { type: string, maxLength: 100 }
+        email: { type: string, format: email }
+        password: { type: string, format: password, minLength: 8 }
+        password_confirmation: { type: string, format: password }
+        country_code: { type: string, pattern: "^[A-Z]{2}$", default: KG }
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+    ProgressRequest:
+      type: object
+      required: [position_seconds, duration_seconds]
+      properties:
+        episode_id: { type: [integer, "null"] }
+        position_seconds: { type: integer, minimum: 0 }
+        duration_seconds: { type: integer, minimum: 1 }
+  responses:
+    Success:
+      description: Успешный ответ
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
+    ValidationError:
+      description: Ошибка валидации
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
+    NotFound:
+      description: Ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
+    Unauthenticated:
+      description: Требуется вход
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
