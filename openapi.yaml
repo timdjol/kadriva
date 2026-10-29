@@ -75,6 +75,7 @@ paths:
       parameters:
         - { name: q, in: query, required: true, schema: { type: string, minLength: 2, maxLength: 100 } }
         - { $ref: "#/components/parameters/Page" }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 20 } }
       responses:
         "200":
           $ref: "#/components/responses/Success"

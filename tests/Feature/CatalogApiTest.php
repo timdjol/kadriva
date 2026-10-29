@@ -31,7 +31,13 @@ class CatalogApiTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.name', 'Тестовый фильм');
 
+        $title->credits()->create(['name' => 'Вера Алентова', 'position' => 0]);
+
         $this->getJson('/api/v1/search?q='.urlencode('Тестовый'))
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $title->id);
+
+        $this->getJson('/api/v1/search?q='.urlencode('Алентова').'&limit=8')
             ->assertOk()
             ->assertJsonPath('data.0.id', $title->id);
 

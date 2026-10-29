@@ -133,12 +133,16 @@ class CatalogController extends Controller
         $validated = $request->validate([
             'q' => ['required', 'string', 'min:2', 'max:100'],
             'page' => ['sometimes', 'integer', 'min:1'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:20'],
         ]);
         $escaped = addcslashes($validated['q'], '%_');
         $page = Title::published()->with('genres')
-            ->where(fn ($query) => $query->where('name', 'like', "%{$escaped}%")
-                ->orWhere('original_name', 'like', "%{$escaped}%"))
-            ->orderByDesc('popularity')->paginate(20);
+            ->where(fn ($query) => $query
+                ->where('name', 'like', "%{$escaped}%")
+                ->orWhere('original_name', 'like', "%{$escaped}%")
+                ->orWhereHas('credits', fn ($credits) => $credits->where('name', 'like', "%{$escaped}%")))
+            ->orderByDesc('popularity')
+            ->paginate($validated['limit'] ?? 20);
 
         return $this->success(
             collect($page->items())->map($this->titleData(...)),

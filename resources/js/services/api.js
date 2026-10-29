@@ -36,7 +36,7 @@ export const api = {
     title: (id) => request('get', `/titles/${id}`),
     seasons: (id) => request('get', `/titles/${id}/seasons`),
     watchOptions: (id, params) => request('get', `/titles/${id}/watch-options`, { params }),
-    search: (q, page = 1, signal) => request('get', '/search', { params: { q, page }, signal }),
+    search: (q, page = 1, signal, limit) => request('get', '/search', { params: { q, page, limit }, signal }),
     countries: () => request('get', '/countries'),
     detectCountry: () => request('get', '/countries/detect'),
     genres: () => request('get', '/genres'),
