@@ -120,8 +120,8 @@ onBeforeUnmount(() => {
 <template>
     <header class="app-header">
         <div class="shell header-inner">
-            <RouterLink class="brand focusable" to="/" aria-label="КиноДом — на главную">
-                <span class="brand-mark" aria-hidden="true">▶</span><span>Кино<span>Дом</span></span>
+            <RouterLink class="brand focusable" to="/" aria-label="Kadriva — на главную">
+                <img class="brand-logo" src="/brand/kadriva-logo.svg" alt="Kadriva" width="192" height="48" />
             </RouterLink>
             <nav class="main-nav" aria-label="Основная навигация">
                 <RouterLink class="focusable" to="/">Главная</RouterLink>
@@ -163,7 +163,7 @@ onBeforeUnmount(() => {
                     >
                         <span class="search-suggest-poster">
                             <img v-if="posterOf(item)" :src="posterOf(item)" :alt="`Постер: ${titleName(item)}`" />
-                            <span v-else aria-hidden="true">КД</span>
+                            <span v-else aria-hidden="true">K</span>
                         </span>
                         <span class="search-suggest-copy">
                             <strong>{{ titleName(item) }}</strong>

@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('Cinema')
+            ->brandName('Kadriva')
             ->colors([
                 'primary' => Color::Amber,
             ])

@@ -18,7 +18,7 @@ const router = createRouter({
 
 router.afterEach((to) => {
     const labels = { home: 'Главная', catalog: 'Каталог', search: 'Поиск', title: 'Просмотр', movie: 'Фильм', series: 'Сериал', account: 'Мой профиль', 'reset-password': 'Сброс пароля' };
-    document.title = `${labels[to.name] || 'Кино'} — КиноДом`;
+    document.title = `${labels[to.name] || 'Кино'} — Kadriva`;
 });
 
 export default router;

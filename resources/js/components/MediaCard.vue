@@ -10,7 +10,7 @@ const failed = ref(false);
     <RouterLink class="media-card focusable" :to="titlePath(item)" :aria-label="`${titleName(item)}, ${yearOf(item)}`">
         <div class="poster">
             <img v-if="posterOf(item) && !failed" :src="posterOf(item)" :alt="`Постер: ${titleName(item)}`" loading="lazy" @error="failed = true" />
-            <div v-else class="poster-placeholder" aria-hidden="true"><span>КД</span></div>
+            <div v-else class="poster-placeholder" aria-hidden="true"><span>K</span></div>
             <span v-if="ratingOf(item) !== '—'" class="rating">★ {{ ratingOf(item) }}</span>
             <div v-if="progress > 0" class="progress-track" aria-label="Прогресс просмотра">
                 <span :style="{ width: `${Math.min(progress, 100)}%` }"></span>

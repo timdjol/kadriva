@@ -28,7 +28,7 @@ Route::get('/{section}/{slugId}', function (string $section, string $slugId) {
 
     return view('welcome', [
         'title' => $title,
-        'pageTitle' => $title->name.' — Cinema',
+        'pageTitle' => $title->name.' — Kadriva',
         'description' => str($title->description)->limit(155),
         'image' => $title->backdrop_url ?: $title->poster_url,
     ]);

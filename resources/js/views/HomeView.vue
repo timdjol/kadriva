@@ -48,7 +48,7 @@ onMounted(load);
     <div>
         <StatePanel v-if="loading || error" :loading="loading" :error="error" @retry="load" />
         <template v-else>
-            <section v-if="hero" class="hero" :style="backdropOf(hero) ? { backgroundImage: `linear-gradient(90deg, rgba(7,8,12,.98) 5%, rgba(7,8,12,.72) 53%, rgba(7,8,12,.18)), linear-gradient(0deg, #07080c, transparent 35%), url('${backdropOf(hero)}')` } : {}">
+            <section v-if="hero" class="hero" :style="backdropOf(hero) ? { backgroundImage: `linear-gradient(90deg, rgba(20,17,17,.98) 5%, rgba(20,17,17,.72) 53%, rgba(20,17,17,.18)), linear-gradient(0deg, #141111, transparent 35%), url('${backdropOf(hero)}')` } : {}">
                 <div class="shell hero-content">
                     <span class="eyebrow">Выбор редакции</span>
                     <h1>{{ titleName(hero) }}</h1>

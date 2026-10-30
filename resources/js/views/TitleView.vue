@@ -48,7 +48,7 @@ async function load() {
     try {
         const response = await api.title(titleId.value);
         title.value = response.data?.title || response.data;
-        document.title = `${titleName(title.value)} — КиноДом`;
+        document.title = `${titleName(title.value)} — Kadriva`;
         if (title.value?.type === 'series') {
             const seasonsResponse = await api.seasons(titleId.value);
             seasons.value = listFrom(seasonsResponse.data?.seasons || seasonsResponse.data);
@@ -81,11 +81,11 @@ onMounted(load);
     <div>
         <StatePanel v-if="loading || error" :loading="loading" :error="error" @retry="load" />
         <template v-else-if="title">
-            <section class="detail-hero" :style="backdropOf(title) ? { backgroundImage: `linear-gradient(90deg, #07080c 3%, rgba(7,8,12,.82) 52%, rgba(7,8,12,.25)), linear-gradient(0deg, #07080c, transparent 40%), url('${backdropOf(title)}')` } : {}">
+            <section class="detail-hero" :style="backdropOf(title) ? { backgroundImage: `linear-gradient(90deg, #141111 3%, rgba(20,17,17,.82) 52%, rgba(20,17,17,.25)), linear-gradient(0deg, #141111, transparent 40%), url('${backdropOf(title)}')` } : {}">
                 <div class="shell detail-layout">
                     <div class="detail-poster">
                         <img v-if="posterOf(title)" :src="posterOf(title)" :alt="`Постер: ${titleName(title)}`" />
-                        <div v-else class="poster-placeholder"><span>КД</span></div>
+                        <div v-else class="poster-placeholder"><span>K</span></div>
                     </div>
                     <div class="detail-copy">
                         <span class="eyebrow">{{ title.type === 'series' ? 'Сериал' : 'Фильм' }}</span>

@@ -49,7 +49,7 @@ async function submit() {
         <div v-if="session.authOpen" class="modal-backdrop" role="presentation">
             <section class="auth-dialog" role="dialog" aria-modal="true" :aria-label="title" @keydown.esc="session.authOpen = false">
                 <button class="modal-close focusable" aria-label="Закрыть" @click="session.authOpen = false">×</button>
-                <div class="eyebrow">КиноДом</div>
+                <div class="eyebrow">Kadriva</div>
                 <h2>{{ title }}</h2>
                 <p class="muted">{{ session.authMode === 'login' ? 'Войдите, чтобы сохранять фильмы и продолжать просмотр.' : (session.authMode === 'forgot' ? 'Укажите почту — отправим ссылку для нового пароля.' : 'Избранное и история просмотра будут доступны на всех устройствах.') }}</p>
                 <form class="auth-form" @submit.prevent="submit">

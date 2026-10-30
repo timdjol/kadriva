@@ -55,7 +55,7 @@ onUnmounted(() => window.removeEventListener('keydown', spatialKeydown));
         <RouterView />
     </main>
     <footer class="site-footer">
-        <div class="shell"><span class="brand-small">КиноДом</span><span>Кино, которое хочется смотреть</span><span>© {{ new Date().getFullYear() }}</span></div>
+        <div class="shell"><RouterLink to="/" class="brand-small focusable" aria-label="Kadriva — на главную"><img src="/brand/kadriva-logo.svg" alt="Kadriva" width="144" height="36" /></RouterLink><span>Кино, которое хочется смотреть</span><span>© {{ new Date().getFullYear() }}</span></div>
     </footer>
     <div v-if="session.countryPrompt" class="notice-banner country-banner" role="dialog" aria-label="Подтверждение страны">
         <p>Похоже, вы в стране <strong>{{ session.countryPrompt.code }}</strong>. Подтвердите, чтобы показать доступные источники.</p>
